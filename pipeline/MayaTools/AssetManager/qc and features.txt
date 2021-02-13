@@ -1,0 +1,23 @@
+1)size of the asset (width and height)
+2)model on grid?
+3)triagular face or five faces
+4)outliner naming convention
+5)
+
+
+features:
+1)while doing new template take a backup of old file
+2)adding reference image to UI, after selecting asset number
+
+
+open images in fcheck , double click thumbnail
+UV layout border qc
+
+Texturing qc
+1)all shuld be in jpg extension
+2)
+
+
+modeling has to be published before starting texturing
+
+add log
