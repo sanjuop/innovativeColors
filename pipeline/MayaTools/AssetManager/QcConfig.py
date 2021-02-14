@@ -76,7 +76,7 @@ def check_for_jpg():
 
 
 modeling_qc_list = ["check_file_name", "check_for_multiple_group", "unfrozenTransforms", "rename_hierarchy", "triangles"]
-texturing_qc_list = ["check_for_jpg"]
+texturing_qc_list = ["check_for_jpg"]+modeling_qc_list
 
 
      

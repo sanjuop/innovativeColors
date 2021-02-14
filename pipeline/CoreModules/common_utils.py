@@ -1,7 +1,6 @@
 import os
 import shutil
-from datetime import date
-import datetime
+from datetime import datetime
 
 
 assets_path = r"C:\Target"
@@ -15,39 +14,26 @@ def temp_dir():
     return temp_dir
 
 
+def copy_to_server(source, destination):
+    if os.path.exists(destination):
+        take_backup(destination)
+    if not os.path.exists(os.path.dirname(destination)):
+        os.makedirs(os.path.dirname(destination))
+    shutil.copy2(source, destination)
 
 
-def take_backup (src_file_name, dst_file_name=None, src_dir='', dst_dir=''):
+def take_backup(orig_file_path):
     
-    #This module work for today's date
-    today = date.today()
-    date_format =today.strftime("%d_%b_%Y_")
+    today = datetime.now()
+    date_format = today.strftime("%d_%m_%Y_%H_%M_%S")
 
-    #this module will work for the date of previous day
-    #Un-Comment The Following two statements To Use the 'Previous_day' variable 
-    # previous_day = datetime.date.today()-datetime.timedelta(days=1)
-    # date_format =previous_day.strftime("%d_%b_%Y_")
-   
-    #Name of the source file
-    src_dir=src_dir+src_file_name
+    dir_name = os.path.dirname(orig_file_path)
+    base_name = os.path.basename(orig_file_path)
+    asset_name = os.path.splitext(base_name)[0]
+    ext = os.path.splitext(base_name)[1]
     
-    #If Block Will Work When User Enter Either 'None' or empty String ('')
-    if dst_file_name is None or not dst_file_name:
-        dst_file_name = src_file_name
-        dst_file_name = dst_dir+date_format+dst_file_name
-        print('if')
-    #elif block will work when user Enter an empty string with one or more spaces (' ')    
-    elif dst_file_name.isspace():
-        dst_file_name = src_file_name
-        dst_file_name = dst_dir+date_format+dst_file_name
-        print('elif')
-    #else block will work when user Enter an a name for the backup copy.    
-    else:
-        dst_file_name = dst_dir+date_format+dst_file_name
-        print('else')
-       
-    #Take The Backup
-    shutil.copy2(src_dir,dst_file_name)
-    
-    #Success Message
-    print("Backup Successful")
+    new_name = asset_name+"_"+date_format+ext
+    backup_path = os.path.join(dir_name, "Versions", new_name)
+    if not os.path.exists(os.path.dirname(backup_path)):
+        os.makedirs(os.path.dirname(backup_path))
+    shutil.copy2(orig_file_path, backup_path)

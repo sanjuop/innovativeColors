@@ -6,9 +6,22 @@ from shiboken2 import wrapInstance
 
 import pymel.core as pm
 
-def saveFile(path):
+def import_file(path):
+    pm.importFile(path)
+
+def refer_file(path):
+    pm.createReference(path)
+
+def open_file(path, prompt=False):
+    pm.openFile(path, f=True, prompt=prompt)
+
+def save_file_as(path):
     path = path+".ma"
     pm.saveAs(path)
+    
+
+def save_file():
+    pm.saveFile(force=True)
 
 def getFilePath():
     return pm.sceneName()

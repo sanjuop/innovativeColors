@@ -7,7 +7,6 @@ import subprocess
 
 from PySide2 import QtGui, QtCore, QtWidgets
 from PySide2.QtCore import QFile, QObject
-
 import pymel.core as pm
 
 import pipeline.CoreModules.common_utils as common_utils;reload(common_utils)
@@ -16,7 +15,8 @@ import pipeline.PysideWidgets.dialogs as dialogs;reload(dialogs)
 import pipeline.PysideWidgets.QcReport.QcReport as QcReport;reload(QcReport)
 import pipeline.PysideWidgets.image_widget as image_widget;reload(image_widget)
 import pipeline.MayaTools.maya_wrappers as maya_wrappers;reload(maya_wrappers)
-import pipeline.MayaTools.workspace_control as wsc;reload(wsc)
+from pipeline.MayaTools.workspace_control import DockableUI
+import file_explorer as file_explorer;reload(file_explorer)
 import pipeline.Icons as icon
 
 current_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -26,8 +26,9 @@ assets_path = r"C:\Target"
 
 temp_dir = common_utils.temp_dir()
 
+department_shot_name = {"Modeling":"Mo", "Texturing":"Tx"}
 
-class AssetPublishTool(wsc.DockableUI):
+class AssetPublishTool(DockableUI):
     
     WINDOW_TITLE = "Asset Manager"
 
@@ -39,18 +40,16 @@ class AssetPublishTool(wsc.DockableUI):
         self.setMinimumWidth(300)
 
         # self.setWindowFlags(QtCore.Qt.Window)
+        main_layout = QtWidgets.QVBoxLayout()
 
-        self.layout = QtWidgets.QHBoxLayout(self)
+        self.layout = QtWidgets.QHBoxLayout()
         
-        toggle_lay = QtWidgets.QVBoxLayout()
-        self.qc_tab_btn = QtWidgets.QPushButton()
-        self.qc_tab_btn.setFixedSize(50,50)
-        self.qc_tab_btn.setIcon(QtGui.QIcon('{}/browse.png'.format(icon_dir)))
-        self.push_to_server_btn = QtWidgets.QPushButton()
-        self.push_to_server_btn.setFixedSize(50,50)
-        self.push_to_server_btn.setIcon(QtGui.QIcon('{}/check.png'.format(icon_dir)))
-        toggle_lay.addWidget(self.qc_tab_btn)
-        toggle_lay.addWidget(self.push_to_server_btn)
+        toggle_lay = QtWidgets.QHBoxLayout()
+        self.model_btn = QtWidgets.QRadioButton("Modeling")
+        self.model_btn.setChecked(True)
+        self.texture_btn = QtWidgets.QRadioButton("Texturing")
+        toggle_lay.addWidget(self.model_btn)
+        toggle_lay.addWidget(self.texture_btn)
 
         asset_lay = QtWidgets.QVBoxLayout()
         self.assets_label = QtWidgets.QLabel("Assets List")
@@ -58,24 +57,15 @@ class AssetPublishTool(wsc.DockableUI):
         self.assets_list.setSortingEnabled(True)
         self.assets_list.setFixedWidth(80)
         self.thumbnail = self.image_thumbnail()
-        asset_lay.addWidget(self.thumbnail)
-
+        
         self.assets_list.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.assets_list.customContextMenuRequested.connect(self.show_right_click)
 
+        asset_lay.addWidget(self.thumbnail)
         asset_lay.addWidget(self.assets_label)
         asset_lay.addWidget(self.assets_list)
 
-        # Initialize tab screen
-        self.tabs = QtWidgets.QTabWidget()
-        self.tabs.setFixedWidth(150)
-        self.tabs.tabBar().setVisible(False)
         self.tab1 = QtWidgets.QWidget()
-        self.tab2 = QtWidgets.QWidget()
-
-        # Add tabs
-        self.tabs.addTab(self.tab1, "QC")
-        self.tabs.addTab(self.tab2, "Push to server")
 
         # Create first tab
         self.tab1.layout = QtWidgets.QHBoxLayout(self)
@@ -84,33 +74,40 @@ class AssetPublishTool(wsc.DockableUI):
         self.qc_list.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.all_qc_btn = QtWidgets.QPushButton("Run all QC's")
         
+        self.qc_lay.addLayout(toggle_lay)
         self.qc_lay.addWidget(self.qc_list)
         self.qc_lay.addWidget(self.all_qc_btn)
         self.tab1.layout.addLayout(self.qc_lay)
         self.tab1.setLayout(self.tab1.layout)
 
-        # Create second tab
-        self.tab2.layout = QtWidgets.QVBoxLayout()
-        self.published_version_list = QtWidgets.QListWidget()
-        self.tab2.layout.addWidget(self.published_version_list)
-        self.tab2.setLayout(self.tab2.layout)
-
-        self.layout.addLayout(toggle_lay)
+        # self.layout.addLayout(toggle_lay)
         self.layout.addLayout(asset_lay)
-        self.layout.addWidget(self.tabs)
-        self.setLayout(self.layout)
+        self.layout.addWidget(self.tab1)
 
-        self.qc_tab_btn.clicked.connect(self.open_qc_tab)
-        self.push_to_server_btn.clicked.connect(self.open_publish_tab)
+        self.file_explorer = file_explorer.FileExplorerDialog()
+        main_layout.addLayout(self.layout)
+        main_layout.addWidget(self.file_explorer)
+        
+        self.setLayout(main_layout)
+
         self.apply_darkOrange_style()
 
+        self.model_btn.clicked.connect(lambda: self.populate_qc_list("modeling", False))
+        self.texture_btn.clicked.connect(lambda: self.populate_qc_list("texturing", False))
+        
         self.populate_assets_list()
-        self.populate_qc_list()
+        self.populate_qc_list("modeling", True)
 
         self.qc_list.itemDoubleClicked.connect(self.execute_selced_qc)
         self.all_qc_btn.clicked.connect(self.run_all_Qc)
         self.assets_list.itemSelectionChanged.connect(self.toggle_thumbnail)
+        self.assets_list.itemSelectionChanged.connect(self.toggle_folder_structure)
         self.label.double_click.connect(self.open_image)
+
+    def toggle_folder_structure(self):
+        selected_item = self.assets_list.currentItem().text()
+        asset_path = os.path.join(assets_path, selected_item, "_Maya")
+        self.file_explorer.refresh_list(asset_path)
 
     def open_image(self):
         image_path = self.label.get_image
@@ -123,7 +120,6 @@ class AssetPublishTool(wsc.DockableUI):
         selected_item = self.assets_list.currentItem().text()
         asset_path = os.path.join(assets_path, selected_item)
         ref_images = [os.path.join(root, each_file) for root, dir, file1 in os.walk(asset_path) for each_file in file1 if 'REF' in each_file]
-        # ref_images = [f for f in glob.glob(path + "*REF*/*.txt", recursive=True)]
         if ref_images:
             ref_images = ref_images[0]
         else:
@@ -139,21 +135,34 @@ class AssetPublishTool(wsc.DockableUI):
         all_assets_list = os.listdir(assets_path)
         self.assets_list.addItems(all_assets_list)
 
-    def populate_qc_list(self):
-        qclist = QcConfig.qc_list
-        self.qc_list.addItems(qclist)
+    def get_asset_publish_path(self, asset_name, department):
+        dept_shot_name = department_shot_name[department]
+        asset_name = maya_wrappers.getBaseName()
+        asset_path = os.path.join(assets_path, asset_name, "_Maya", dept_shot_name, asset_name+".fbx")
+        return asset_path
 
+
+    def file_publised(self):
+        asset_name = maya_wrappers.getBaseName()
+        asset_path = self.get_asset_publish_path(asset_name, "Modeling")
+        if os.path.exists(asset_path):
+            return True
+        return False
+
+    def populate_qc_list(self, department, default=True):
+        if not default:
+            if not self.file_publised():
+                self.model_btn.setChecked(True)
+                dialogs.message("massage", "Modeling not published", "Modeling not published, You cannont do texturing Qc")
+                return
+        self.qc_list.clear()
+        qc_list = eval('QcConfig.{}_qc_list'.format(department))
+        self.qc_list.addItems(qc_list)
 
     def apply_darkOrange_style(self):
         style = open('{}/darkorange.css'.format(current_directory) , 'r')
         style = style.read()
         self.setStyleSheet(style)
-
-    def open_qc_tab(self):
-        self.tabs.setCurrentIndex(0)
-
-    def open_publish_tab(self):
-        self.tabs.setCurrentIndex(1)
 
     def show_right_click(self, pos):
         item = self.assets_list.itemAt(pos)
@@ -191,12 +200,11 @@ class AssetPublishTool(wsc.DockableUI):
             if result:
                 shutil.rmtree(asset_path)
                 os.makedirs(asset_path)
-                maya_wrappers.saveFile(asset_full_path)
+                maya_wrappers.save_file_as(asset_full_path)
         else:
             os.makedirs(asset_path)
-            maya_wrappers.saveFile(asset_full_path)
+            maya_wrappers.save_file_as(asset_full_path)
         
-
     def show_in_folder(self):
         selected_asset = self.get_selected_asset()
         asset_path = os.path.join(assets_path, selected_asset)
@@ -232,13 +240,39 @@ class AssetPublishTool(wsc.DockableUI):
         self.publish_btn = QtWidgets.QPushButton("Publish")
         self.publish_btn.clicked.connect(self.publishData)
         self.qc_lay.addWidget(self.publish_btn)
+        
 
     
     def publishData(self):
-        exportGroup = "A79802885"
-        pm.select(exportGroup)
-        outputFile = r"E:\InnovativeColors\edf.fbx"
-        pm.mel.FBXExport(f=outputFile, s=True)
+        itemsTextList =  [str(self.qc_list.item(i).text()) for i in range(self.qc_list.count())]
+        error_list = self.run_qc_func(itemsTextList)
+        
+        if error_list:
+            publish_btn_index = self.qc_lay.indexOf(self.publish_btn)
+            item = self.qc_lay.takeAt(publish_btn_index)
+            w = item.widget()
+            w.deleteLater()
+            qc_report = QcReport.QcReport(error_list, parent=None)
+            qc_report.exec_()
+            return
+
+        asset_name = maya_wrappers.getBaseName()
+        if self.model_btn.isChecked():
+            dept = self.model_btn.text()
+        elif self.texture_btn.isChecked():
+            dept = self.texture_btn.text()
+
+        publish_path = self.get_asset_publish_path(asset_name, dept)
+
+        main_node = maya_wrappers.get_assembly_nodes()[0]
+        pm.select(main_node)
+        local_File_path = os.path.join(common_utils.temp_dir(), asset_name+".fbx")
+        if os.path.exists(local_File_path):
+            os.remove(local_File_path)
+        pm.mel.FBXExport(f=local_File_path, s=True)
+        common_utils.copy_to_server(local_File_path, publish_path)
+        os.remove(local_File_path)
+        dialogs.message("massage", "file published", "File published, {}".format(dept))
 
         
 def main():

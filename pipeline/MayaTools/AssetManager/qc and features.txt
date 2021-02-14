@@ -21,3 +21,9 @@ Texturing qc
 modeling has to be published before starting texturing
 
 add log
+
+
+1)load Qc as per departments(mo,tx)
+2)before starting tx, mo has to be published
+3)tex artist has to open latest mo file and start working on texturing file
+4)
