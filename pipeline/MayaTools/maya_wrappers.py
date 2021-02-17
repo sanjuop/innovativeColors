@@ -39,6 +39,15 @@ def get_assembly_nodes():
     all_assemblies = [i for i in pm.ls(assemblies=True) if i.name() not in exclude]
     return all_assemblies
 
+def get_file_nodes():
+    all_file_nodes = {each_file: each_file.ftn.get() for each_file in pm.ls(type="file")}
+    if all_file_nodes:
+        return all_file_nodes
+
+
+def delete_unused_nodes():
+    pm.mel.eval("MLdeleteUnused;")
+
 def maya_main_window():
     """
     Return the Maya main window widget as a Python object

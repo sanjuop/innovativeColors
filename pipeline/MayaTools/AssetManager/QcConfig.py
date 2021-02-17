@@ -1,5 +1,5 @@
 import os
-
+import re
 import pymel.core as pm
 
 import pipeline.MayaTools.maya_wrappers as maya_wrappers;reload(maya_wrappers)
@@ -71,8 +71,50 @@ def triangles():
 
 
 def check_for_jpg():
-    print "check_for_jpg"
+    non_jpeg_images = {}
+    file_nodes = maya_wrappers.get_file_nodes()
+    if file_nodes:
+        for each_file_node in file_nodes:
+            if re.search("\.jpeg$|\.jpg", each_file_node):
+                non_jpeg_images[each_file_node.name()] = each_file_node.fnt.get()
+    if non_jpeg_images:
+        return error_dict("non jpg images are present in the scene:\n{}".format(non_jpeg_images))
     return True
+
+
+def scene_uv_bounds(target = (0,0,1,1)):
+    umin, vmin, umax, vmax  = 0, 0, 0, 0
+    out_of_bounds = []
+    for item in pm.ls(type='mesh'):
+        # polyEvaluate -b2 returns [(umin, umax) , (vmin, vmas)]
+        uvals, vvals = pm.polyEvaluate(item, b2=True)
+        #unpack into separate values
+        uumin, uumax = uvals
+        vvmin, vvmax = vvals
+
+        if uumin < target[0] or vvmin < target[1] or uumax > target[2] or vvmax > target[3]:
+            out_of_bounds.append(item)
+
+        umin = min(umin, uumin)
+        umax = max(umax, uumax)
+        vmin = min(vmin, vvmin)
+        vmax = max(vmax, vvmax)
+
+    if out_of_bounds:
+        return error_dict("following nodes have UV's outside the layout:\n{}".format(out_of_bounds))
+    return True
+
+def multiple_uv_sets(self, instance):
+    meshes = pm.ls(instance, type='mesh', long=True)
+    invalid = []
+    for mesh in meshes:
+        uvSets = pm.polyUVSet(mesh, query=True, allUVSets=True)
+        if len(uvSets) != 1:
+            invalid.append(mesh)
+    if invalid:
+        return error_dict("following nodes have UV's outside the layout:\n{}".format(invalid))
+    return True
+    
 
 
 modeling_qc_list = ["check_file_name", "check_for_multiple_group", "unfrozenTransforms", "rename_hierarchy", "triangles"]

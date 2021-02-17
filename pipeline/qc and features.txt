@@ -1,21 +1,31 @@
+Modeling Qc
 1)size of the asset (width and height)
 2)model on grid?
 3)triagular face or five faces
 4)outliner naming convention
-5)
-
-
-features:
-1)while doing new template take a backup of old file
-2)adding reference image to UI, after selecting asset number
-
-
-open images in fcheck , double click thumbnail
-UV layout border qc
+5)normal reverse
 
 Texturing qc
 1)all shuld be in jpg extension
-2)
+2)image shd not exceed 4k
+3)shader rename
+4)Texture rename
+5)UV co-ordinate shd not exceed outside layout
+6)delete unwanted nodes, with unwanted textures
+5)if any light, delete it
+6)warning if anycolor correct node in hypershade
+6)UV Filp
+7)delete unwanted UV sets
+8)export uv snapshot(4k resolution)
 
 
-modeling has to be published before starting texturing
+--------shader library------
+1)Arnold, Redshift, PhongE render engine(manditory 3 shdershas to be publish)
+2)publish shader file in server
+3)publish textures in server
+4)publish publish working files in server
+5)after publishing 
+    - Export Redshift shader
+    - Export PhongE shader
+    - Export Arnold shader
+    - copy all the textures to same folder inside Texture directory
