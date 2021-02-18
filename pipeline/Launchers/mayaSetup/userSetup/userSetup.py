@@ -29,7 +29,17 @@ def build_menu():
     
     assetManager = pm.menuItem('Asset Manager', p=root_menu, c=toolslist.asset_manager, l='Asset Manager')
 
-    shader_library = pm.menuItem('Shader Library', p=root_menu, c=toolslist.shaderLibrary, l='Shader Library')
+    pm.menuItem(p=root_menu, d=1)
+
+
+    Modeling = pm.menuItem('Modeling', p=root_menu, bld=1, sm=1, to=1, l='Modeling')
+    pm.menuItem('samePolyCount', parent=Modeling, c=toolslist.samePolyCount , label='samePolyCount')
+
+    Texturing = pm.menuItem('Texturing', p=root_menu, bld=1, sm=1, to=1, l='Texturing')
+    pm.menuItem('UVSnapshotExporter', parent=Texturing, c=toolslist.UVSnapshotExporter , label='UVSnapshotExporter')
+
+    Shading = pm.menuItem('Shading', p=root_menu, bld=1, sm=1, to=1, l='Shading')
+    pm.menuItem('ShaderLibrary', parent=Shading, c=toolslist.shaderLibrary, l='Shader Library')
 
 def _LOAD_TOOLS_():
     utils.executeDeferred('build_menu()')

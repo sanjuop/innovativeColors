@@ -150,7 +150,6 @@ class Exporter:
 
         window = self.mainWindow
         self.mainWindow.show()
-        print('UI opened')
 
     def getTextureFolder(self):
         """
@@ -187,8 +186,6 @@ class Exporter:
         color = self.color.currentText()
 
         meshes = mc.ls(selection=True)
-
-        print('EXPORT STARTED')
 
         for mesh in meshes:
 
@@ -245,5 +242,3 @@ class Exporter:
                             print fileName + ' as been created'
 
         mc.select(meshes, replace=True)
-
-        print('EXPORT FINISHED')
