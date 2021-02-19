@@ -34,6 +34,7 @@ def build_menu():
 
     Modeling = pm.menuItem('Modeling', p=root_menu, bld=1, sm=1, to=1, l='Modeling')
     pm.menuItem('samePolyCount', parent=Modeling, c=toolslist.samePolyCount , label='samePolyCount')
+    pm.menuItem('CheckerSizeTool', parent=Modeling, c=toolslist.CheckerSizeTool , label='CheckerSizeTool')
 
     Texturing = pm.menuItem('Texturing', p=root_menu, bld=1, sm=1, to=1, l='Texturing')
     pm.menuItem('UVSnapshotExporter', parent=Texturing, c=toolslist.UVSnapshotExporter , label='UVSnapshotExporter')

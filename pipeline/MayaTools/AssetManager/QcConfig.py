@@ -140,6 +140,7 @@ def reverse_mesh_normals():
     if reversed_meshes:
         mesh_names = [i.name() for i in reversed_meshes]
         return error_dict("Following meshes normals are not proper:\n{}".format(mesh_names))
+    return True
 
 
 def check_for_jpg():
@@ -147,7 +148,7 @@ def check_for_jpg():
     file_nodes = maya_wrappers.get_file_nodes()
     if file_nodes:
         for each_file_node in file_nodes:
-            if re.search("\.jpeg$|\.jpg", file_nodes[each_file_node]):
+            if not re.search("\.jpeg$|\.jpg", file_nodes[each_file_node]):
                 non_jpeg_images[each_file_node.name()] = each_file_node.ftn.get()
     if non_jpeg_images:
         return error_dict("non jpg images are present in the scene:\n{}".format(non_jpeg_images))
@@ -243,5 +244,6 @@ def delete_lights():
     return True
 
 
-modeling_qc_list = ["check_file_name", "check_for_multiple_group", "delete_unwanted_nodes", "reverse_mesh_normals", "unfrozenTransforms", "rename_hierarchy", "triangles", "delete_lights"]
+# modeling_qc_list = ["check_file_name", "check_for_multiple_group", "delete_unwanted_nodes", "reverse_mesh_normals", "unfrozenTransforms", "rename_hierarchy", "triangles", "delete_lights"]
+modeling_qc_list = ["check_file_name", "check_for_multiple_group", "delete_unwanted_nodes", "reverse_mesh_normals", "unfrozenTransforms", "rename_hierarchy", "delete_lights"]
 texturing_qc_list = ["check_for_jpg", "scene_uv_bounds", "image_size", "multiple_uv_sets"]+modeling_qc_list

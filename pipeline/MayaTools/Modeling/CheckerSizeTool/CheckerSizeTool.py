@@ -327,9 +327,6 @@ def shell_UV_scaler():
     cmds.progressBar(progressControl, edit=True, endProgress=True)
     cmds.progressBar(progressControl, edit=True, visible=False)
     om.MGlobal.displayInfo("Done")
-        
-
-show_window()
 
 
 

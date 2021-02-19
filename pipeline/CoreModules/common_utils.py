@@ -3,9 +3,9 @@ import shutil
 from datetime import datetime
 
 
-assets_path = r"C:\Target"
+assets_path = r"T:\Batch01"
 
-xn_view_path = r"C:\Program Files\XnViewMP\xnviewmp.exe"
+xn_view_path = r"C:\Program Files (x86)\XnView\xnview.exe"
 
 def temp_dir(): 
     temp_dir = r"C:\Temp"

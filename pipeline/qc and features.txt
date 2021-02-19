@@ -1,22 +1,32 @@
 Modeling Qc
 1)size of the asset (width and height)
 2)model on grid?
-3)triagular face or five faces
+3)triagular face or five faces (fix btn)
 4)outliner naming convention
-5)normal reverse
+5)normal reverse (fix btn)
+6)Freeze transform (fix)
 
 Texturing qc
 1)all shuld be in jpg extension
-2)image shd not exceed 4k
+2)image shd not exceed 4k(1024x1024, 2048x2048, 3072x3072, 4096X4096, 8192x8192)
 3)shader rename
 4)Texture rename
-5)UV co-ordinate shd not exceed outside layout
+5)UV co-ordinate shd not exceed outside layout(skip)
 6)delete unwanted nodes, with unwanted textures
 5)if any light, delete it
 6)warning if anycolor correct node in hypershade
 6)UV Filp
 7)delete unwanted UV sets
 8)export uv snapshot(4k resolution)
+9)
+
+ignoring, Qcs option
+
+
+
+publish_procedure
+1)T:\Batch01\54638876\_Maya\Mo\54638876.fbx
+2)T:\Batch01\54638876\_Maya\Mo\54638876.ma
 
 
 --------shader library------
@@ -29,3 +39,8 @@ Texturing qc
     - Export PhongE shader
     - Export Arnold shader
     - copy all the textures to same folder inside Texture directory
+    
+    
+    
+    
+K Rename tool(for converting jpg to png)

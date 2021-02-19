@@ -22,7 +22,8 @@ import pipeline.Icons as icon
 current_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 icon_dir = os.path.dirname(icon.__file__)
 
-assets_path = r"C:\Target"
+
+assets_path = r"T:\Batch01"
 
 temp_dir = common_utils.temp_dir()
 
@@ -223,6 +224,7 @@ class AssetPublishTool(DockableUI):
         error_list = []
         for each_qc in qc_list:
             result = eval("QcConfig.{}()".format(each_qc))
+            print "each_qc", each_qc
             if not result is True:
                 result["error_title"] = each_qc
                 error_list.append(result)
