@@ -21,6 +21,10 @@ def samePolyCount(*args):
 def CheckerSizeTool(*args):
     import pipeline.MayaTools.Modeling.CheckerSizeTool.CheckerSizeTool as CST;reload(CST)
     CST.show_window()
+
+def shaderRenamer(*args):
+    import pipeline.MayaTools.Shading.shaderRenamer.shaderRenamer as SR;reload(SR)
+    SR.main()
     
 
 def shaderLibrary(*args):

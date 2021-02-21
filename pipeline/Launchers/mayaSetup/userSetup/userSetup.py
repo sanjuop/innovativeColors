@@ -12,7 +12,7 @@ PIPELINE_PATH = os.environ.get("PIPELINE_PATH").split("pipeline")[0]
 if PIPELINE_PATH not in sys.path:
     sys.path.append(PIPELINE_PATH)
 
-import pipeline.CoreModules.common_utils
+import pipeline.CoreModules.common.common_utils
 import toolslist
 
 parent_menu_name = 'Innovative-Colors'
@@ -41,6 +41,7 @@ def build_menu():
 
     Shading = pm.menuItem('Shading', p=root_menu, bld=1, sm=1, to=1, l='Shading')
     pm.menuItem('ShaderLibrary', parent=Shading, c=toolslist.shaderLibrary, l='Shader Library')
+    pm.menuItem('ShaderRenamer', parent=Shading, c=toolslist.shaderRenamer, l='Shader Renamer')
 
 def _LOAD_TOOLS_():
     utils.executeDeferred('build_menu()')
