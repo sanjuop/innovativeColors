@@ -1,5 +1,6 @@
 import os
 import shutil
+import json
 from datetime import datetime
 
 
@@ -37,3 +38,9 @@ def take_backup(orig_file_path):
     if not os.path.exists(os.path.dirname(backup_path)):
         os.makedirs(os.path.dirname(backup_path))
     shutil.copy2(orig_file_path, backup_path)
+
+
+def read_json_file(file_path):
+    with open(file_path, "r") as f1:
+        data = json.load(f1)
+    return data
