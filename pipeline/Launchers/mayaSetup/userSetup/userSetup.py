@@ -42,6 +42,9 @@ def build_menu():
     Shading = pm.menuItem('Shading', p=root_menu, bld=1, sm=1, to=1, l='Shading')
     pm.menuItem('ShaderLibrary', parent=Shading, c=toolslist.shaderLibrary, l='Shader Library')
     pm.menuItem('ShaderRenamer', parent=Shading, c=toolslist.shaderRenamer, l='Shader Renamer')
+    
+    Lighting = pm.menuItem('Lighting', p=root_menu, bld=1, sm=1, to=1, l='Lighting')
+    pm.menuItem('Lighting_Tool', parent=Lighting, c=toolslist.LightTool, l='Lighting Tool')
 
 def _LOAD_TOOLS_():
     utils.executeDeferred('build_menu()')

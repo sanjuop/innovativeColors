@@ -26,6 +26,9 @@ def shaderRenamer(*args):
     import pipeline.MayaTools.Shading.shaderRenamer.shaderRenamer as SR;reload(SR)
     SR.main()
     
+def LightTool(*args):
+    import pipeline.MayaTools.Lighting.LightTool.lighting as LT;reload(LT)
+    LT.main() 
 
 def shaderLibrary(*args):
     print "sdfsdfsdfsd"

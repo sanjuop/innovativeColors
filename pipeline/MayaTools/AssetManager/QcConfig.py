@@ -7,7 +7,7 @@ import imghdr
 import pymel.core as pm
 
 import pipeline.MayaTools.maya_wrappers as maya_wrappers;reload(maya_wrappers)
-import pipeline.CoreModules.common_utils as common_utils;reload(common_utils)
+import pipeline.CoreModules.common.common_utils as common_utils;reload(common_utils)
 
 assets_path = common_utils.assets_path
 

@@ -1,0 +1,56 @@
+1)pre_analyse button
+	1)converting anf to rdf
+	2)loads light rig
+	3)loads assets in UI
+
+2)Define Interation mesh button
+	1) define interation mesh by selecting geometry
+	 - it creates "interaction_mesh_set" in outliner, containing selected meshes
+
+3)select light rig	 
+	all the light rig from "Q:\projects\lh\Library\Lighting\LIGHT_PRESET\BG_LIGHT_RIG" is listed in combo box
+	
+	
+4) re-arranging assets in UI
+
+5) Analyse
+	-checks for "interaction_mesh_set" if not present, tool will not proceed
+	-checks for "light rig" if its default, tool will not proceed
+	-export interaction meshes("Q:\projects\lh\shots\e02\e02-sq05\e02-sq05_0660\Lighting\interaction_mesh.ma")
+	-creates sets,objectProperties for each asset
+	-saves the master file in local("C:\Users\innovative\Maya_Temp\e02-sq05-0660\lh_e02-sq05-0660_master_v01_i01.ma")
+		and backup copy in server("Q:\projects\lh\shots\e02\e02-sq05\e02-sq05_0660\Lighting\lh_e02-sq05-0660_master_v01_i01.ma")
+	-saves shot details in  json file(asset hierarchy and BG light rig)
+	-publishes ID for all assets(Q:\projects\lh\Library\Lighting\MATTE_IDs)
+	
+	
+	
+to do
+-default render globals
+-disable master layer
+-ch_utility preset file update(shadow catcher shader),shadow aov,SHD_CATCHER
+-delete ui if exists
+-dock ui
+-layer override
+-update renderable cam
+
+
+
+CH_SHD_LIGHTS
+INT_LIGHTS
+
+light rig publish tool
+1) check for local path in dome light(hdr)
+2)export in .ma
+
+prj_code = "lh"
+pm.nodePreset(save=("redshiftOptions", "RGP1_%s"%prj_code))
+pm.nodePreset(save=("defaultRenderGlobals", "RGP2_%s"%prj_code))
+pm.nodePreset(save=("defaultResolution", "RGP3_%s"%prj_code))
+
+
+pm.nodePreset(load=("redshiftOptions", "RGP1_%s"%prj_code))
+pm.nodePreset(load=("defaultRenderGlobals", "RGP2_%s"%prj_code))
+pm.nodePreset(load=("defaultResolution", "RGP3_%s"%prj_code))
+		
+		

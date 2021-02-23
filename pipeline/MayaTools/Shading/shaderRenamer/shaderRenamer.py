@@ -20,10 +20,12 @@ node_map_data = common_utils.read_json_file(node_map_file)
 
 class ShaderRenamer(QtWidgets.QWidget):
     IGNORE_NODES = ["colorManagementGlobals", "defaultShaderList", "materialInfo"]
-    def __init__(self):
-        super(ShaderRenamer, self).__init__()
+    def __init__(self, parent = None):
+        super(ShaderRenamer, self).__init__(parent=parent)
 
         self.setWindowTitle("Shader Renamer")
+        self.setObjectName("Shader Renamer")
+        self.setWindowFlags(QtCore.Qt.Window)
 
         ShaderRenamerLogger.info("setting up ui...")
 
@@ -107,7 +109,7 @@ class ShaderRenamer(QtWidgets.QWidget):
                 if shader:
                     all_shaders.append(shader.name())
         return all_shaders
-		#stores all the child nodes for the shader
+
         
 
     def get_shader_from_engine(self, engine):
@@ -121,13 +123,9 @@ class ShaderRenamer(QtWidgets.QWidget):
         
 
 win=None
-def main(debug=False):
+def main():
 	#launch shader renamer
     global win
-    try:
-        win.close()
-    except:
-        pass
-    win = ShaderRenamer()
+    if win is None:
+        win = ShaderRenamer(parent=maya_wrappers.maya_main_window())
     win.show()
-    return

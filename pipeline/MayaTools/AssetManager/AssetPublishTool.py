@@ -9,7 +9,7 @@ from PySide2 import QtGui, QtCore, QtWidgets
 from PySide2.QtCore import QFile, QObject
 import pymel.core as pm
 
-import pipeline.CoreModules.common_utils as common_utils;reload(common_utils)
+import pipeline.CoreModules.common.common_utils as common_utils;reload(common_utils)
 import QcConfig as QcConfig;reload(QcConfig)
 import pipeline.PysideWidgets.dialogs as dialogs;reload(dialogs)
 import pipeline.PysideWidgets.QcReport.QcReport as QcReport;reload(QcReport)
@@ -23,7 +23,7 @@ current_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.curr
 icon_dir = os.path.dirname(icon.__file__)
 
 
-assets_path = r"T:\Batch01"
+assets_path = common_utils.assets_path
 
 temp_dir = common_utils.temp_dir()
 
@@ -39,6 +39,7 @@ class AssetPublishTool(DockableUI):
 
         self.setWindowTitle(self.WINDOW_TITLE)
         self.setMinimumWidth(300)
+        self.setMinimumHeight(400)
 
         # self.setWindowFlags(QtCore.Qt.Window)
         main_layout = QtWidgets.QVBoxLayout()
@@ -274,6 +275,11 @@ class AssetPublishTool(DockableUI):
         pm.mel.FBXExport(f=local_File_path, s=True)
         common_utils.copy_to_server(local_File_path, publish_path)
         os.remove(local_File_path)
+        
+        #save maya file
+        local_maya_file_path = maya_wrappers.getFilePath()
+        common_utils.copy_to_server(local_File_path, publish_path)
+        
         dialogs.message("massage", "file published", "File published, {}".format(dept))
 
         
